@@ -21,7 +21,7 @@ class WeatherService {
           if (cities.containsKey('lat') && cities.containsKey('lon')) {
             final response = await http
                 .get(Uri.parse(
-                    "$weatherApiUrl?latitude=${cities['lat']}&longitude=${cities['lon']}&hourly=temperature_2m"))
+                    "$weatherApiUrl?latitude=${cities['lat']}&longitude=${cities['lon']}&timezone=GMT-3&current=temperature_2m,is_day,weather_code&hourly=temperature_2m,apparent_temperature,weather_code"))
                 .timeout(const Duration(seconds: 10));
 
             if (response.statusCode == 200) {
