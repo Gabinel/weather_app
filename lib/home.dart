@@ -18,6 +18,7 @@ class _HomeState extends State<Home> {
   String country = '';
   Map<dynamic, dynamic>? weatherData;
   String imagePath = "assets/img/";
+  String displayText = '';
 
   void getWeather() async {
     if (city != '' && state != '' && country != '') {
@@ -48,6 +49,18 @@ class _HomeState extends State<Home> {
                                     ? "${imagePath}day/partly_cloudy.png"
                                     : "${imagePath}night/partly_cloudy.png"
                                 : "${imagePath}day/clear.png";
+
+        List<String> weatherType = imagePath.split('/');
+
+        displayText = isDay == 1 ? "Day - " : "Night - ";
+        displayText += "The weather is ";
+        displayText += weatherType[weatherType.length - 1];
+        displayText = displayText.split('.')[0];
+        if (displayText.contains('_')) {
+          displayText =
+              "${displayText.split('_')[0]} ${displayText.split('_')[1]}";
+        }
+        displayText += " right now!";
       });
     }
   }
@@ -206,7 +219,29 @@ class _HomeState extends State<Home> {
                           ),
                         ],
                       ),
+                    ),
+              const SizedBox(height: 70),
+              Container(
+                width: 375,
+                height: 350,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(25)),
+                  color: Color.fromARGB(255, 31, 31, 59),
+                ),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Text(
+                        displayText,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
                     )
+                  ],
+                ),
+              )
             ],
           ),
         ));
