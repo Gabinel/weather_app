@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/weather_service.dart';
 import 'package:weather_app/container_row.dart';
+import 'package:weather_app/daily_column.dart';
 
 // Cria um stateful widget, ou seja, um widget que pode mudar de estado
 class Home extends StatefulWidget {
@@ -15,11 +16,13 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   WeatherService weatherService = WeatherService();
   ContainerRow containerRow = ContainerRow();
+  DailyColumn dailyColumn = DailyColumn();
   String city = '';
   String state = '';
   String country = '';
   Map<String, dynamic>? weatherData;
   List<Map<String, dynamic>>? weatherFutureData;
+  List<Map<String, dynamic>>? dailyData;
   String imagePath = '';
   String displayText = '';
   int isDay = 0;
@@ -28,11 +31,13 @@ class _HomeState extends State<Home> {
     if (city != '' && state != '' && country != '') {
       var data = await weatherService.fetchWeather(city, state, country);
       var futureData = weatherService.filterFutureWeather(data);
+      var daily = weatherService.getDailyData(data);
       int weatherCode = data["current"]["weather_code"];
 
       setState(() {
         weatherData = data;
         weatherFutureData = futureData;
+        dailyData = daily;
 
         isDay = data["current"]["is_day"];
 
@@ -42,17 +47,19 @@ class _HomeState extends State<Home> {
         displayText += "The weather is ";
         displayText += weatherCode == 0
             ? "clear"
-            : weatherCode >= 1 && weatherCode <= 3
-                ? "partly cloudy"
-                : weatherCode >= 45 && weatherCode <= 48
-                    ? "cloudy"
-                    : weatherCode >= 51 && weatherCode <= 55
-                        ? "drizzling"
-                        : weatherCode >= 61 && weatherCode <= 65
-                            ? "rainy"
-                            : weatherCode == 95
-                                ? "stormy"
-                                : "clear";
+            : weatherCode == 1
+                ? "mainly clear"
+                : weatherCode >= 2 && weatherCode <= 3
+                    ? "partly cloudy"
+                    : weatherCode >= 45 && weatherCode <= 48
+                        ? "cloudy"
+                        : weatherCode >= 51 && weatherCode <= 55
+                            ? "drizzling"
+                            : weatherCode >= 61 && weatherCode <= 65
+                                ? "rainy"
+                                : weatherCode == 95
+                                    ? "stormy"
+                                    : "clear";
         displayText += " right now!";
       });
     }
@@ -206,7 +213,30 @@ class _HomeState extends State<Home> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 70),
+                        const SizedBox(height: 35),
+                        Container(
+                          width: 375,
+                          height: 150,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(25)),
+                            color: Color.fromARGB(255, 31, 31, 59),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(25),
+                            child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  dailyColumn.dailyColumn(dailyData![1]),
+                                  dailyColumn.dailyColumn(dailyData![2]),
+                                  dailyColumn.dailyColumn(dailyData![3]),
+                                  dailyColumn.dailyColumn(dailyData![4]),
+                                  dailyColumn.dailyColumn(dailyData![5]),
+                                  dailyColumn.dailyColumn(dailyData![6]),
+                                ]),
+                          ),
+                        ),
+                        const SizedBox(height: 15),
                         Container(
                           width: 400,
                           height: 315,
@@ -228,7 +258,7 @@ class _HomeState extends State<Home> {
                                         ),
                                       ),
                                       SizedBox(
-                                        height: 10,
+                                        height: 15,
                                       ),
                                       containerRow.containerRow(
                                           weatherFutureData![0], isDay),

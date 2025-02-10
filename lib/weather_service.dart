@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class WeatherService {
   final String geocodeApiKey = "67a4c88fa36a2815748822jvl33a587";
@@ -21,7 +22,7 @@ class WeatherService {
           if (cities.containsKey('lat') && cities.containsKey('lon')) {
             final response = await http
                 .get(Uri.parse(
-                    "$weatherApiUrl?latitude=${cities['lat']}&longitude=${cities['lon']}&timezone=GMT-3&current=temperature_2m,is_day,weather_code&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,weather_code&daily=temperature_2m_max,temperature_2m_min"))
+                    "$weatherApiUrl?latitude=${cities['lat']}&longitude=${cities['lon']}&timezone=GMT-3&current=temperature_2m,is_day,weather_code&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min"))
                 .timeout(const Duration(seconds: 10));
 
             if (response.statusCode == 200) {
@@ -71,6 +72,29 @@ class WeatherService {
     }).toList();
 
     return futureWeatherData;
+  }
+
+  List<Map<String, dynamic>> getDailyData(Map<String, dynamic> data) {
+    List<String> timeList = List<String>.from(data["daily"]["time"]);
+    List<double> maxTemps =
+        List<double>.from(data["daily"]["temperature_2m_max"]);
+    List<double> minTemps =
+        List<double>.from(data["daily"]["temperature_2m_min"]);
+    List<int> weatherCodes = List<int>.from(data["daily"]["weather_code"]);
+
+    return timeList.asMap().entries.map((entry) {
+      int index = entry.key;
+      String timeStr = entry.value;
+
+      return {
+        "time": timeStr,
+        "weekday":
+            DateFormat('EEE').format(DateTime.parse(timeStr)).toUpperCase(),
+        "max_temp": maxTemps[index],
+        "min_temp": minTemps[index],
+        "weather_code": weatherCodes[index]
+      };
+    }).toList();
   }
 
   String getImagePath(int code, int day) {

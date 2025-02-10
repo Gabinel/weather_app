@@ -8,18 +8,18 @@ class ContainerRow {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text("${weatherFutureData!["time"].split('T')[1]}",
+        Text("${weatherFutureData["time"].split('T')[1]}",
             style: TextStyle(color: Colors.white)),
         Flexible(
           child: Image.asset(
             weatherService.getImagePath(
-                weatherFutureData!["weather_code"], isDay),
+                weatherFutureData["weather_code"], isDay),
             width: 50, // Define a largura máxima
             height: 50, // Define a altura máxima
             fit: BoxFit.contain, // Ajusta a imagem ao espaço disponível
           ),
         ),
-        Text("${weatherFutureData!["temperature"].toInt()}ºC",
+        Text("${weatherFutureData["temperature"].toInt()}ºC",
             style: TextStyle(color: Colors.white)),
         Flexible(
           child: Image.asset(
@@ -29,7 +29,7 @@ class ContainerRow {
             fit: BoxFit.contain, // Ajusta a imagem ao espaço disponível
           ),
         ),
-        Text("${weatherFutureData!["precipitation"].toInt()}%",
+        Text("${weatherFutureData["precipitation"].toInt()}%",
             style: TextStyle(color: Colors.white)),
       ],
     );
