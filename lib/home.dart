@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weather_app/weather_service.dart';
+import 'package:weather_app/container_row.dart';
 
 // Cria um stateful widget, ou seja, um widget que pode mudar de estado
 class Home extends StatefulWidget {
@@ -13,53 +14,45 @@ class Home extends StatefulWidget {
 // Estado do widget atual
 class _HomeState extends State<Home> {
   WeatherService weatherService = WeatherService();
+  ContainerRow containerRow = ContainerRow();
   String city = '';
   String state = '';
   String country = '';
-  Map<dynamic, dynamic>? weatherData;
-  String imagePath = "assets/img/";
+  Map<String, dynamic>? weatherData;
+  List<Map<String, dynamic>>? weatherFutureData;
+  String imagePath = '';
   String displayText = '';
+  int isDay = 0;
 
   void getWeather() async {
     if (city != '' && state != '' && country != '') {
       var data = await weatherService.fetchWeather(city, state, country);
+      var futureData = weatherService.filterFutureWeather(data);
       int weatherCode = data["current"]["weather_code"];
-      int isDay = data["current"]["is_day"];
-      imagePath = "assets/img/";
 
       setState(() {
         weatherData = data;
-        print(
-            "DADOSSSSSSSSSSSSSSSSSSSSSS AAAAAAAAAAAAAAAAAAAAAAAAAAAA!!!!!!!!!!!!!!!!!!: $weatherData");
+        weatherFutureData = futureData;
 
-        imagePath = weatherCode >= 51 && weatherCode <= 55
-            ? "${imagePath}drizzle.png"
-            : weatherCode >= 45 && weatherCode <= 48
-                ? "${imagePath}fog.png"
-                : weatherCode >= 61 && weatherCode <= 65
-                    ? "${imagePath}rain.png"
-                    : weatherCode >= 95 && weatherCode <= 99
-                        ? "${imagePath}thunder.png"
-                        : weatherCode >= 0 && weatherCode <= 1
-                            ? isDay == 1
-                                ? "${imagePath}day/clear.png"
-                                : "${imagePath}night/clear.png"
-                            : weatherCode >= 2 && weatherCode <= 3
-                                ? isDay == 1
-                                    ? "${imagePath}day/partly_cloudy.png"
-                                    : "${imagePath}night/partly_cloudy.png"
-                                : "${imagePath}day/clear.png";
+        isDay = data["current"]["is_day"];
 
-        List<String> weatherType = imagePath.split('/');
+        imagePath = weatherService.getImagePath(weatherCode, isDay);
 
         displayText = isDay == 1 ? "Day - " : "Night - ";
         displayText += "The weather is ";
-        displayText += weatherType[weatherType.length - 1];
-        displayText = displayText.split('.')[0];
-        if (displayText.contains('_')) {
-          displayText =
-              "${displayText.split('_')[0]} ${displayText.split('_')[1]}";
-        }
+        displayText += weatherCode == 0
+            ? "clear"
+            : weatherCode >= 1 && weatherCode <= 3
+                ? "partly cloudy"
+                : weatherCode >= 45 && weatherCode <= 48
+                    ? "cloudy"
+                    : weatherCode >= 51 && weatherCode <= 55
+                        ? "drizzling"
+                        : weatherCode >= 61 && weatherCode <= 65
+                            ? "rainy"
+                            : weatherCode == 95
+                                ? "stormy"
+                                : "clear";
         displayText += " right now!";
       });
     }
@@ -167,81 +160,93 @@ class _HomeState extends State<Home> {
                 ],
               ),
               const SizedBox(height: 40),
-              /*
-              weatherData == null
-                  ? const Text(
-                      'Enter your address and press enter',
-                      style: TextStyle(color: Colors.white),
-                    )
-                  : weatherData!.containsKey("hourly") &&
-                          weatherData!["hourly"].containsKey("temperature_2m")
-                      ? Column(
-                          children: List<Widget>.from(
-                            weatherData!["hourly"]["temperature_2m"]
-                                .map<Widget>((value) {
-                              return Text(
-                                "$valueºC",
-                                style: const TextStyle(color: Colors.white),
-                              );
-                            }).toList(),
-                          ),
-                        )
-                      : const Text(
-                          'No results found',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        */
               weatherData == null
                   ? const Text(
                       'Enter your address and press enter',
                       style: TextStyle(color: Colors.white),
                     )
                   : Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "${weatherData!["current"]["temperature_2m"].toInt()}ºC",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 64,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Flexible(
-                            child: Image.asset(
-                              imagePath,
-                              width: 100, // Define a largura máxima
-                              height: 100, // Define a altura máxima
-                              fit: BoxFit
-                                  .contain, // Ajusta a imagem ao espaço disponível
+                      padding: EdgeInsets.all(10),
+                      child: Column(children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  "${weatherData!["current"]["temperature_2m"].toInt()}ºC",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 60,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(width: 10),
+                                Column(children: [
+                                  Text(
+                                    "${weatherData!["daily"]["temperature_2m_max"][0].toInt()}ºC",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 14),
+                                  ),
+                                  Text(
+                                    "${weatherData!["daily"]["temperature_2m_min"][0].toInt()}ºC",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 14),
+                                  ),
+                                ])
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-              const SizedBox(height: 70),
-              Container(
-                width: 375,
-                height: 350,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(25)),
-                  color: Color.fromARGB(255, 31, 31, 59),
-                ),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Text(
-                        displayText,
-                        style: TextStyle(
-                          color: Colors.white,
+                            Flexible(
+                              child: Image.asset(
+                                imagePath,
+                                width: 100, // Define a largura máxima
+                                height: 100, // Define a altura máxima
+                                fit: BoxFit
+                                    .contain, // Ajusta a imagem ao espaço disponível
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
+                        const SizedBox(height: 70),
+                        Container(
+                          width: 400,
+                          height: 315,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(25)),
+                            color: Color.fromARGB(255, 31, 31, 59),
+                          ),
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(15),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        displayText,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      containerRow.containerRow(
+                                          weatherFutureData![0], isDay),
+                                      containerRow.containerRow(
+                                          weatherFutureData![1], isDay),
+                                      containerRow.containerRow(
+                                          weatherFutureData![2], isDay),
+                                      containerRow.containerRow(
+                                          weatherFutureData![3], isDay),
+                                      containerRow.containerRow(
+                                          weatherFutureData![4], isDay),
+                                    ]),
+                              ),
+                            ],
+                          ),
+                        )
+                      ]),
                     )
-                  ],
-                ),
-              )
             ],
           ),
         ));

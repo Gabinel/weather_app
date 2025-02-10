@@ -60,14 +60,24 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/img/drizzle.png
-    - assets/img/fog.png
-    - assets/img/rain.png
-    - assets/img/thunder.png
-    - assets/img/day/clear.png
-    - assets/img/day/partly_cloudy.png
-    - assets/img/night/clear.png
-    - assets/img/night/partly_cloudy.png
+    - assets/img/45.png
+    - assets/img/48.png
+    - assets/img/51.png
+    - assets/img/53.png
+    - assets/img/55.png
+    - assets/img/61.png
+    - assets/img/63.png
+    - assets/img/65.png
+    - assets/img/95.png
+    - assets/img/day/0.png
+    - assets/img/day/1.png
+    - assets/img/day/2.png
+    - assets/img/day/3.png
+    - assets/img/night/0.png
+    - assets/img/night/1.png
+    - assets/img/night/2.png
+    - assets/img/night/3.png
+    - assets/img/drop.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
