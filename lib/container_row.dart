@@ -4,7 +4,13 @@ import 'package:weather_app/weather_service.dart';
 class ContainerRow {
   WeatherService weatherService = WeatherService();
 
-  Row containerRow(Map<String, dynamic> weatherFutureData, int isDay) {
+  Row containerRow(Map<String, dynamic> weatherFutureData) {
+    String today = weatherFutureData["time"].split('T')[0];
+    DateTime currentTime = DateTime.parse(weatherFutureData["time"]);
+    DateTime night = DateTime.parse("${today}T19:00");
+
+    int isDay = currentTime.isBefore(night) ? 1 : 0;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

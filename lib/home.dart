@@ -260,16 +260,16 @@ class _HomeState extends State<Home> {
                                       SizedBox(
                                         height: 15,
                                       ),
-                                      containerRow.containerRow(
-                                          weatherFutureData![0], isDay),
-                                      containerRow.containerRow(
-                                          weatherFutureData![1], isDay),
-                                      containerRow.containerRow(
-                                          weatherFutureData![2], isDay),
-                                      containerRow.containerRow(
-                                          weatherFutureData![3], isDay),
-                                      containerRow.containerRow(
-                                          weatherFutureData![4], isDay),
+                                      containerRow
+                                          .containerRow(weatherFutureData![0]),
+                                      containerRow
+                                          .containerRow(weatherFutureData![1]),
+                                      containerRow
+                                          .containerRow(weatherFutureData![2]),
+                                      containerRow
+                                          .containerRow(weatherFutureData![3]),
+                                      containerRow
+                                          .containerRow(weatherFutureData![4]),
                                     ]),
                               ),
                             ],
