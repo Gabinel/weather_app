@@ -8,8 +8,9 @@ class ContainerRow {
     String today = weatherFutureData["time"].split('T')[0];
     DateTime currentTime = DateTime.parse(weatherFutureData["time"]);
     DateTime night = DateTime.parse("${today}T19:00");
+    DateTime day = DateTime.parse("${today}T06:00");
 
-    int isDay = currentTime.isBefore(night) ? 1 : 0;
+    int isDay = currentTime.isBefore(night) && currentTime.isAfter(day) ? 1 : 0;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
