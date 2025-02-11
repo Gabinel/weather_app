@@ -110,24 +110,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\gabri\\.gradle\\caches\\transforms-3\\ac4d71d3da5bf20d2759902ba132196e\\transformed\\lifecycle-viewmodel-2.7.0\\res\\values\\values.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "49",
-                        "endOffsets": "100"
-                    },
-                    "to": {
-                        "startLines": "143",
-                        "startColumns": "4",
-                        "startOffsets": "7045",
-                        "endColumns": "49",
-                        "endOffsets": "7090"
-                    }
-                },
-                {
-                    "source": "C:\\MOBILE\\weather_app\\android\\app\\src\\main\\res\\values\\styles.xml",
+                    "source": "C:\\MOBILE\\tentando\\weather_app\\android\\app\\src\\main\\res\\values\\styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",
@@ -143,6 +126,23 @@
                         "endLines": "158,161",
                         "endColumns": "12,12",
                         "endOffsets": "8070,8239"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\gabri\\.gradle\\caches\\transforms-3\\ac4d71d3da5bf20d2759902ba132196e\\transformed\\lifecycle-viewmodel-2.7.0\\res\\values\\values.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "49",
+                        "endOffsets": "100"
+                    },
+                    "to": {
+                        "startLines": "143",
+                        "startColumns": "4",
+                        "startOffsets": "7045",
+                        "endColumns": "49",
+                        "endOffsets": "7090"
                     }
                 },
                 {

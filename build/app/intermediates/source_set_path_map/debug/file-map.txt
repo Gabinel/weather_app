@@ -1,10 +1,10 @@
-com.example.weather_app-debug-0 C:\MOBILE\weather_app\android\app\src\debug\res
-com.example.weather_app-main-1 C:\MOBILE\weather_app\android\app\src\main\res
-com.example.weather_app-pngs-2 C:\MOBILE\weather_app\build\app\generated\res\pngs\debug
-com.example.weather_app-resValues-3 C:\MOBILE\weather_app\build\app\generated\res\resValues\debug
-com.example.weather_app-packageDebugResources-4 C:\MOBILE\weather_app\build\app\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.example.weather_app-packageDebugResources-5 C:\MOBILE\weather_app\build\app\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.example.weather_app-merged_res-6 C:\MOBILE\weather_app\build\app\intermediates\merged_res\debug
+com.example.weather_app-debug-0 C:\MOBILE\tentando\weather_app\android\app\src\debug\res
+com.example.weather_app-main-1 C:\MOBILE\tentando\weather_app\android\app\src\main\res
+com.example.weather_app-pngs-2 C:\MOBILE\tentando\weather_app\build\app\generated\res\pngs\debug
+com.example.weather_app-resValues-3 C:\MOBILE\tentando\weather_app\build\app\generated\res\resValues\debug
+com.example.weather_app-packageDebugResources-4 C:\MOBILE\tentando\weather_app\build\app\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.example.weather_app-packageDebugResources-5 C:\MOBILE\tentando\weather_app\build\app\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.example.weather_app-merged_res-6 C:\MOBILE\tentando\weather_app\build\app\intermediates\merged_res\debug
 com.example.weather_app-jetified-lifecycle-viewmodel-savedstate-2.7.0-7 C:\Users\gabri\.gradle\caches\transforms-3\03aed728b7b013fdb0ee78eeb01c4f70\transformed\jetified-lifecycle-viewmodel-savedstate-2.7.0\res
 com.example.weather_app-core-runtime-2.2.0-8 C:\Users\gabri\.gradle\caches\transforms-3\059cceda2ceccaee2d220c95320313d5\transformed\core-runtime-2.2.0\res
 com.example.weather_app-jetified-lifecycle-livedata-core-ktx-2.7.0-9 C:\Users\gabri\.gradle\caches\transforms-3\170cd53763ba8f7adb4146db3d69b874\transformed\jetified-lifecycle-livedata-core-ktx-2.7.0\res
