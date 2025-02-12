@@ -25,11 +25,13 @@ class _HomeState extends State<Home> {
   List<Map<String, dynamic>>? dailyData;
   String imagePath = '';
   String displayText = '';
+  String locationName = '';
   int isDay = 0;
 
   void getWeather() async {
     if (city != '' && state != '' && country != '') {
-      var data = await weatherService.fetchWeather(city, state, country);
+      var location = await weatherService.fetchLocation(city, state, country);
+      var data = await weatherService.fetchWeather(location);
       var futureData = weatherService.filterFutureWeather(data);
       var daily = weatherService.getDailyData(data);
       int weatherCode = data["current"]["weather_code"];
@@ -38,6 +40,12 @@ class _HomeState extends State<Home> {
         weatherData = data;
         weatherFutureData = futureData;
         dailyData = daily;
+
+        List<String> locations = location[0]["display_name"].split(',');
+
+        locationName = '';
+        locationName += locations[0];
+        locationName += locations.length >= 4 ? ",${locations[4]}" : "";
 
         isDay = data["current"]["is_day"];
 
@@ -55,11 +63,14 @@ class _HomeState extends State<Home> {
                         ? "cloudy"
                         : weatherCode >= 51 && weatherCode <= 55
                             ? "drizzling"
-                            : weatherCode >= 61 && weatherCode <= 65
+                            : weatherCode >= 61 && weatherCode <= 65 ||
+                                    weatherCode >= 80 && weatherCode <= 82
                                 ? "rainy"
-                                : weatherCode == 95
-                                    ? "stormy"
-                                    : "clear";
+                                : weatherCode >= 71 && weatherCode <= 75
+                                    ? "snowy"
+                                    : weatherCode == 95
+                                        ? "stormy"
+                                        : "clear";
         displayText += " right now!";
       });
     }
@@ -68,6 +79,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
             title: const Text(
               'Climate Mobile',
@@ -167,116 +179,146 @@ class _HomeState extends State<Home> {
                 ],
               ),
               const SizedBox(height: 40),
-              weatherData == null
-                  ? const Text(
-                      'Enter your address and press enter',
-                      style: TextStyle(color: Colors.white),
-                    )
-                  : Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Column(children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  "${weatherData!["current"]["temperature_2m"].toInt()}ºC",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 60,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                const SizedBox(width: 10),
-                                Column(children: [
-                                  Text(
-                                    "${weatherData!["daily"]["temperature_2m_max"][0].toInt()}ºC",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 14),
-                                  ),
-                                  Text(
-                                    "${weatherData!["daily"]["temperature_2m_min"][0].toInt()}ºC",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 14),
-                                  ),
-                                ])
-                              ],
-                            ),
-                            Flexible(
-                              child: Image.asset(
-                                imagePath,
-                                width: 100, // Define a largura máxima
-                                height: 100, // Define a altura máxima
-                                fit: BoxFit
-                                    .contain, // Ajusta a imagem ao espaço disponível
-                              ),
-                            ),
-                          ],
+              Expanded(
+                child: weatherData == null
+                    ? const Center(
+                        child: Text(
+                          'Enter your address and press enter',
+                          style: TextStyle(color: Colors.white),
                         ),
-                        const SizedBox(height: 35),
-                        Container(
-                          width: 375,
-                          height: 150,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(25)),
-                            color: Color.fromARGB(255, 31, 31, 59),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(25),
-                            child: Row(
+                      )
+                    : Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Column(children: [
+                              Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  dailyColumn.dailyColumn(dailyData![1]),
-                                  dailyColumn.dailyColumn(dailyData![2]),
-                                  dailyColumn.dailyColumn(dailyData![3]),
-                                  dailyColumn.dailyColumn(dailyData![4]),
-                                  dailyColumn.dailyColumn(dailyData![5]),
-                                  dailyColumn.dailyColumn(dailyData![6]),
-                                ]),
-                          ),
-                        ),
-                        const SizedBox(height: 15),
-                        Container(
-                          width: 400,
-                          height: 315,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(25)),
-                            color: Color.fromARGB(255, 31, 31, 59),
-                          ),
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(15),
-                                child: Column(
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "${weatherData!["current"]["temperature_2m"].toInt()}ºC",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 60,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Column(children: [
+                                        Text(
+                                          "${weatherData!["daily"]["temperature_2m_max"][0].toInt()}ºC",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14),
+                                        ),
+                                        Text(
+                                          "${weatherData!["daily"]["temperature_2m_min"][0].toInt()}ºC",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14),
+                                        ),
+                                      ])
+                                    ],
+                                  ),
+                                  Flexible(
+                                    child: Image.asset(
+                                      imagePath,
+                                      width: 100, // Define max width
+                                      height: 100, // Define max height
+                                      fit: BoxFit.contain, // Adjust image fit
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                width: 300, // or any desired width
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(locationName,
+                                      style: TextStyle(color: Colors.white)),
+                                ),
+                              )
+                            ]),
+                            const SizedBox(height: 20),
+
+                            /// **First Container**
+                            SizedBox(
+                              height: 140, // Adjust height as needed
+                              child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(25)),
+                                  color: Color.fromARGB(255, 31, 31, 59),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(25),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      dailyColumn.dailyColumn(dailyData![1]),
+                                      dailyColumn.dailyColumn(dailyData![2]),
+                                      dailyColumn.dailyColumn(dailyData![3]),
+                                      dailyColumn.dailyColumn(dailyData![4]),
+                                      dailyColumn.dailyColumn(dailyData![5]),
+                                      dailyColumn.dailyColumn(dailyData![6]),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 15),
+
+                            /// **Second Container**
+                            Expanded(
+                              flex:
+                                  2, // Make it take more space than the first container
+                              child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(25)),
+                                  color: Color.fromARGB(255, 31, 31, 59),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.all(15),
+                                  child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
                                         displayText,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                        ),
+                                        style: TextStyle(color: Colors.white),
                                       ),
-                                      SizedBox(
-                                        height: 15,
-                                      ),
-                                      containerRow
-                                          .containerRow(weatherFutureData![0]),
-                                      containerRow
-                                          .containerRow(weatherFutureData![1]),
-                                      containerRow
-                                          .containerRow(weatherFutureData![2]),
-                                      containerRow
-                                          .containerRow(weatherFutureData![3]),
-                                      containerRow
-                                          .containerRow(weatherFutureData![4]),
-                                    ]),
+                                      SizedBox(height: 15),
+                                      Wrap(
+                                        spacing:
+                                            10, // Espaço horizontal entre os itens
+                                        runSpacing:
+                                            10, // Espaço vertical entre as linhas
+                                        alignment: WrapAlignment
+                                            .center, // Centraliza os itens
+                                        children: weatherFutureData!
+                                            .sublist(0, 5)
+                                            .map((data) {
+                                          return SizedBox(
+                                            // Ajusta largura dinamicamente
+                                            child:
+                                                containerRow.containerRow(data),
+                                          );
+                                        }).toList(),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ],
-                          ),
-                        )
-                      ]),
-                    )
+                            ),
+                          ],
+                        ),
+                      ),
+              )
             ],
           ),
         ));

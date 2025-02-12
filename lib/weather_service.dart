@@ -7,37 +7,36 @@ class WeatherService {
   final String geocodeApiUrl = "https://geocode.maps.co/search";
   final String weatherApiUrl = "https://api.open-meteo.com/v1/forecast";
 
-  Future<Map<String, dynamic>> fetchWeather(
+  Future<List<dynamic>> fetchLocation(
       String city, String state, String country) async {
+    final cityResponse = await http
+        .get(Uri.parse(
+            "$geocodeApiUrl?q=$city,$state,$country&api_key=$geocodeApiKey"))
+        .timeout(const Duration(seconds: 10));
+
+    return json.decode(cityResponse.body);
+  }
+
+  Future<Map<String, dynamic>> fetchWeather(List<dynamic> decoded) async {
     try {
-      final cityResponse = await http
-          .get(Uri.parse(
-              "$geocodeApiUrl?q=$city,$state,$country&api_key=$geocodeApiKey"))
-          .timeout(const Duration(seconds: 10));
+      if (decoded.isNotEmpty) {
+        final cities = decoded[0];
+        if (cities.containsKey('lat') && cities.containsKey('lon')) {
+          final response = await http
+              .get(Uri.parse(
+                  "$weatherApiUrl?latitude=${cities['lat']}&longitude=${cities['lon']}&timezone=GMT-3&current=temperature_2m,is_day,weather_code&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min"))
+              .timeout(const Duration(seconds: 10));
 
-      if (cityResponse.statusCode == 200) {
-        final decoded = json.decode(cityResponse.body);
-        if (decoded is List && decoded.isNotEmpty) {
-          final cities = decoded[0];
-          if (cities.containsKey('lat') && cities.containsKey('lon')) {
-            final response = await http
-                .get(Uri.parse(
-                    "$weatherApiUrl?latitude=${cities['lat']}&longitude=${cities['lon']}&timezone=GMT-3&current=temperature_2m,is_day,weather_code&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min"))
-                .timeout(const Duration(seconds: 10));
-
-            if (response.statusCode == 200) {
-              return json.decode(response.body);
-            } else {
-              throw Exception("Failed to load weather data");
-            }
+          if (response.statusCode == 200) {
+            return json.decode(response.body);
           } else {
-            throw Exception("Geolocation data missing lat/lon");
+            throw Exception("Failed to load weather data");
           }
         } else {
-          throw Exception("Geocoding API returned no results");
+          throw Exception("Geolocation data missing lat/lon");
         }
       } else {
-        throw Exception("Failed to load geolocation data");
+        throw Exception("Geocoding API returned no results");
       }
     } catch (e) {
       print("Error in fetchWeather: $e");
