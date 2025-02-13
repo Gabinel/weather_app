@@ -7,11 +7,9 @@ class WeatherService {
   final String geocodeApiUrl = "https://geocode.maps.co/search";
   final String weatherApiUrl = "https://api.open-meteo.com/v1/forecast";
 
-  Future<List<dynamic>> fetchLocation(
-      String city, String state, String country) async {
+  Future<List<dynamic>> fetchLocation(String postalCode) async {
     final cityResponse = await http
-        .get(Uri.parse(
-            "$geocodeApiUrl?q=$city,$state,$country&api_key=$geocodeApiKey"))
+        .get(Uri.parse("$geocodeApiUrl?q=$postalCode&api_key=$geocodeApiKey"))
         .timeout(const Duration(seconds: 10));
 
     return json.decode(cityResponse.body);

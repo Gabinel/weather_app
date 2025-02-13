@@ -18,9 +18,7 @@ class _HomeState extends State<Home> {
   ContainerRow containerRow = ContainerRow();
   DailyColumn dailyColumn = DailyColumn();
 
-  String city = '';
-  String state = '';
-  String country = '';
+  String postalCode = '';
   Map<String, dynamic>? weatherData;
   List<Map<String, dynamic>>? weatherFutureData;
   List<Map<String, dynamic>>? dailyData;
@@ -31,8 +29,8 @@ class _HomeState extends State<Home> {
   bool celsius = true;
 
   void getWeather() async {
-    if (city != '' && state != '' && country != '') {
-      var location = await weatherService.fetchLocation(city, state, country);
+    if (postalCode != '') {
+      var location = await weatherService.fetchLocation(postalCode);
       var data = await weatherService.fetchWeather(location, celsius);
       var futureData = weatherService.filterFutureWeather(data);
       var daily = weatherService.getDailyData(data);
@@ -305,7 +303,7 @@ class _HomeState extends State<Home> {
             child: TextField(
               style: const TextStyle(color: Colors.white),
               decoration: const InputDecoration(
-                labelText: 'City',
+                labelText: 'Postal Code',
                 labelStyle: TextStyle(color: Colors.white),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(color: Colors.white),
@@ -316,55 +314,7 @@ class _HomeState extends State<Home> {
               ),
               onSubmitted: (value) {
                 setState(() {
-                  city = value;
-                  getWeather();
-                });
-              },
-            ),
-          ),
-        ),
-        Flexible(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: TextField(
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
-                labelText: 'State',
-                labelStyle: TextStyle(color: Colors.white),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.lightBlue),
-                ),
-              ),
-              onSubmitted: (value) {
-                setState(() {
-                  state = value;
-                  getWeather();
-                });
-              },
-            ),
-          ),
-        ),
-        Flexible(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            child: TextField(
-              style: const TextStyle(color: Colors.white),
-              decoration: const InputDecoration(
-                labelText: 'Country',
-                labelStyle: TextStyle(color: Colors.white),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.white),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.lightBlue),
-                ),
-              ),
-              onSubmitted: (value) {
-                setState(() {
-                  country = value;
+                  postalCode = value;
                   getWeather();
                 });
               },
