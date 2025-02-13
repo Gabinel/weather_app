@@ -137,7 +137,8 @@ class _HomeState extends State<Home> {
       children: [
         SizedBox(
           width: 300,
-          child: Expanded(
+          child: SizedBox(
+            width: 300,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
