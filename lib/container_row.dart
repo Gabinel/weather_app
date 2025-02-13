@@ -4,7 +4,7 @@ import 'package:weather_app/weather_service.dart';
 class ContainerRow {
   WeatherService weatherService = WeatherService();
 
-  Row containerRow(Map<String, dynamic> weatherFutureData) {
+  Row containerRow(Map<String, dynamic> weatherFutureData, bool celsius) {
     String today = weatherFutureData["time"].split('T')[0];
     DateTime currentTime = DateTime.parse(weatherFutureData["time"]);
     DateTime night = DateTime.parse("${today}T19:00");
@@ -26,7 +26,10 @@ class ContainerRow {
             fit: BoxFit.contain, // Ajusta a imagem ao espaço disponível
           ),
         ),
-        Text("${weatherFutureData["temperature"].toInt()}ºC",
+        Text(
+            celsius
+                ? "${weatherFutureData["temperature"].toInt()}ºC"
+                : "${weatherFutureData["temperature"].toInt()}ºF",
             style: TextStyle(color: Colors.white)),
         Flexible(
           child: Image.asset(

@@ -3,7 +3,7 @@ import 'package:weather_app/weather_service.dart';
 
 class DailyColumn {
   WeatherService weatherService = WeatherService();
-  
+
   Column dailyColumn(dailyData) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,

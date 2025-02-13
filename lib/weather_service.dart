@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class WeatherService {
-  final String geocodeApiKey = "67a4c88fa36a2815748822jvl33a587";
+  final String geocodeApiKey = "67ad3473899f9102355317dbjb25f70";
   final String geocodeApiUrl = "https://geocode.maps.co/search";
   final String weatherApiUrl = "https://api.open-meteo.com/v1/forecast";
 
@@ -17,15 +17,24 @@ class WeatherService {
     return json.decode(cityResponse.body);
   }
 
-  Future<Map<String, dynamic>> fetchWeather(List<dynamic> decoded) async {
+  Future<Map<String, dynamic>> fetchWeather(
+      List<dynamic> decoded, bool celsius) async {
     try {
       if (decoded.isNotEmpty) {
         final cities = decoded[0];
         if (cities.containsKey('lat') && cities.containsKey('lon')) {
-          final response = await http
-              .get(Uri.parse(
-                  "$weatherApiUrl?latitude=${cities['lat']}&longitude=${cities['lon']}&timezone=GMT-3&current=temperature_2m,is_day,weather_code&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min"))
-              .timeout(const Duration(seconds: 10));
+          final http.Response response;
+          if (celsius) {
+            response = await http
+                .get(Uri.parse(
+                    "$weatherApiUrl?latitude=${cities['lat']}&longitude=${cities['lon']}&timezone=GMT-3&current=temperature_2m,is_day,weather_code&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min"))
+                .timeout(const Duration(seconds: 10));
+          } else {
+            response = await http
+                .get(Uri.parse(
+                    "$weatherApiUrl?latitude=${cities['lat']}&longitude=${cities['lon']}&timezone=GMT-3&current=temperature_2m,is_day,weather_code&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit"))
+                .timeout(const Duration(seconds: 10));
+          }
 
           if (response.statusCode == 200) {
             return json.decode(response.body);
